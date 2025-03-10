@@ -7,6 +7,7 @@ export interface Product {
   price: number;
   image: string;
   category: string;
+  size?: string;
 }
 
 interface CartItem extends Product {
@@ -41,10 +42,16 @@ const calculateTotals = (items: CartItem[]): { totalItems: number; totalPrice: n
   );
 };
 
+const getItemId = (item: Product): string => {
+  // Create a unique ID that includes the size if present
+  return item.size ? `${item.id}-${item.size}` : item.id;
+};
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case "ADD_ITEM": {
-      const existingItemIndex = state.items.findIndex((item) => item.id === action.payload.id);
+      const itemId = getItemId(action.payload);
+      const existingItemIndex = state.items.findIndex((item) => getItemId(item) === itemId);
       
       let updatedItems: CartItem[];
       
@@ -68,7 +75,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
     
     case "REMOVE_ITEM": {
-      const updatedItems = state.items.filter((item) => item.id !== action.payload);
+      const updatedItems = state.items.filter((item) => getItemId(item) !== action.payload);
       const { totalItems, totalPrice } = calculateTotals(updatedItems);
       
       return {
@@ -86,7 +93,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       }
       
       const updatedItems = state.items.map((item) =>
-        item.id === id ? { ...item, quantity } : item
+        getItemId(item) === id ? { ...item, quantity } : item
       );
       
       const { totalItems, totalPrice } = calculateTotals(updatedItems);
