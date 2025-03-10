@@ -16,7 +16,7 @@ export function NavItems({ items }: NavItemsProps) {
       {items.map((item) => (
         <Link
           key={item.name}
-          to={item.href}
+          to={`/category/${item.href.replace('#', '')}`}
           className="text-sm font-medium transition-colors hover:text-primary"
         >
           {item.name}

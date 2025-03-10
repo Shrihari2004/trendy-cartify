@@ -2,69 +2,9 @@
 import { useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/context/CartContext";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
-
-// Sample product data
-const products: Product[] = [
-  {
-    id: "1-new",
-    name: "Premium Cotton T-Shirt",
-    price: 29.99,
-    image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=500&auto=format&fit=crop",
-    category: "Men's Clothing"
-  },
-  {
-    id: "2",
-    name: "Slim Fit Jeans",
-    price: 59.99,
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=500&auto=format&fit=crop",
-    category: "Men's Clothing"
-  },
-  {
-    id: "3-sale",
-    name: "Casual Summer Dress",
-    price: 49.99,
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=500&auto=format&fit=crop",
-    category: "Women's Clothing"
-  },
-  {
-    id: "4",
-    name: "Leather Crossbody Bag",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=80&w=500&auto=format&fit=crop",
-    category: "Accessories"
-  },
-  {
-    id: "5-new",
-    name: "Wireless Headphones",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=500&auto=format&fit=crop",
-    category: "Electronics"
-  },
-  {
-    id: "6",
-    name: "Smartwatch",
-    price: 199.99,
-    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=500&auto=format&fit=crop",
-    category: "Electronics"
-  },
-  {
-    id: "7-sale",
-    name: "Running Shoes",
-    price: 79.99,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop",
-    category: "Footwear"
-  },
-  {
-    id: "8",
-    name: "Designer Sunglasses",
-    price: 149.99,
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=500&auto=format&fit=crop",
-    category: "Accessories"
-  }
-];
+import { products } from "@/data/products";
 
 interface CategoryFilter {
   id: string;
@@ -87,12 +27,23 @@ export function FeaturedProducts() {
   ];
 
   const filteredProducts = activeFilter === "all" 
-    ? products 
-    : products.filter(product => 
-        product.category.toLowerCase().includes(activeFilter) ||
-        (activeFilter === "men" && product.category.includes("Men")) ||
-        (activeFilter === "women" && product.category.includes("Women"))
-      );
+    ? products.slice(0, 8) // Show only 8 products on the homepage
+    : products.filter(product => {
+        const category = product.category.toLowerCase();
+        
+        switch(activeFilter) {
+          case "men":
+            return category.includes("men");
+          case "women":
+            return category.includes("women");
+          case "electronics":
+            return category.includes("electronics");
+          case "accessories":
+            return category.includes("accessories");
+          default:
+            return true;
+        }
+      }).slice(0, 8); // Limit to 8 products
 
   return (
     <section className="py-12 md:py-16 lg:py-20">

@@ -18,6 +18,7 @@ export function SearchInput({ isExpanded, onToggle }: SearchInputProps) {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      onToggle(false);
     }
   };
 
